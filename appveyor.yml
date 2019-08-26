@@ -3,8 +3,8 @@ image: Visual Studio 2017
 platform: x64
 configuration: Debug
 
-#before_build:
-#  - dotnet restore
+before_build:
+  - dotnet restore
 
 #  - nuget install packages.config
 
