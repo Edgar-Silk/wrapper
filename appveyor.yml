@@ -13,12 +13,16 @@ build:
   verbosity: normal
   project: wrapper.sln 
 
-deploy:
-  - provider: NuGet
-    symbol_server: https://ci.appveyor.com/nuget/wrapper-8k7xixj6m22b/api/v2/package
-    api_key:
-      secure: 8avv5kgxnpoqxildqyfsnga3
-    artifact: /.*\.symbols\.nupkg/
+after_build:
+
+  - nuget push Wrapper.1.0.1.nupkg 4ea8694a-134a-4cbe-b553-b3c6487a64ec -Source https://www.myget.org/F/wrapper-pdfium/api/v2/package
+
+# deploy:
+#   - provider: NuGet
+#     symbol_server: https://ci.appveyor.com/nuget/wrapper-8k7xixj6m22b/api/v2/package
+#     api_key:
+#       secure: 8avv5kgxnpoqxildqyfsnga3
+#     artifact: /.*\.symbols\.nupkg/
 
 #test_script:
 #  - C:\projects\testfromnuget\TestFromNuGet\bin\x64\Debug\TestFromNuGet.exe
