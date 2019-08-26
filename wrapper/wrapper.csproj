@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="$(OutputPath)\pdfium.dll" Visible="false">
+    <Content Include="lib\pdfium.dll" Visible="false">
       <Pack>true</Pack>
       <PackagePath>lib\$(TargetFramework)</PackagePath>
      </Content>
