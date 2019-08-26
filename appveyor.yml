@@ -9,7 +9,7 @@ configuration: Debug
 #  - nuget install packages.config
 
 build:
-  include_nuget_references: true
+  #include_nuget_references: true
   verbosity: normal
   project: wrapper.sln 
 
