@@ -13,5 +13,12 @@ build:
   verbosity: normal
   project: wrapper.sln 
 
+deploy:
+  - provider: NuGet
+    symbol_server: https://ci.appveyor.com/nuget/wrapper-8k7xixj6m22b/api/v2/package
+    api_key:
+      secure: 8avv5kgxnpoqxildqyfsnga3
+    artifact: /.*\.symbols\.nupkg/
+
 #test_script:
 #  - C:\projects\testfromnuget\TestFromNuGet\bin\x64\Debug\TestFromNuGet.exe
