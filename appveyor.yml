@@ -15,7 +15,7 @@ build:
 
 after_build:
 
-  - nuget push Wrapper.1.0.1.nupkg 4ea8694a-134a-4cbe-b553-b3c6487a64ec -Source https://www.myget.org/F/wrapper-pdfium/api/v2/package
+  - nuget push C:\projects\wrapper\wrapper\bin\x64\Debug\Wrapper.1.0.1.nupkg 4ea8694a-134a-4cbe-b553-b3c6487a64ec -Source https://www.myget.org/F/wrapper-pdfium/api/v2/package
 
 # deploy:
 #   - provider: NuGet
