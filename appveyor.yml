@@ -47,6 +47,131 @@ install:
 
         gclient sync
 
+        ## Patch
+
+        Set-Location C:\Tmp\pdfium 
+
+        #Start patching the configuration BUILD.gn
+        Write-Host "Start patching BUILD.gn"
+
+        #Copy the original file
+        if(-Not (Test-Path -Path C:\Tmp\pdfium\BUILD.ORG.gn)){
+            Copy-Item '.\BUILD.gn' '.\BUILD.ORG.gn'
+            Write-Host 'Copy the original BUILD.gn'
+        }
+
+        # Set file name
+        $File = '.\BUILD.ORG.gn'
+        $FileOut = '.\BUILD.mod.gn'
+
+        # Process lines of text from file and assign result to $NewContent variable
+        $NewContent = Get-Content -Path $File |
+            ForEach-Object {
+                # Output the existing line to pipeline in any case
+                
+                # If line matches regex
+                if($_ -match ([regex]::Escape('PNG_USE_READ_MACROS')))
+                {
+                    # Add output additional line
+                    $_
+                    '    "FPDFSDK_EXPORTS",'
+                }
+                
+                elseif($_ -match ('jumbo_component.+'))
+                {
+                    # Add output additional line
+                    'shared_library("pdfium") {'
+                }
+
+                elseif($_ -match ('complete_static_lib.+'))
+                {
+                    # Add output additional line
+                    '    complete_shared_lib = true'
+                }
+                
+                elseif($_ -match ([regex]::Escape('public_configs = [ ":pdfium_public_config" ]')))
+                {
+                    # Add output additional line
+                    $_
+                    '  sources = []'
+                }
+
+                else{ $_ }
+
+            }
+
+        # Write content of $NewContent varibale back to file
+        $NewContent | Out-File -FilePath $FileOut -Encoding Default -Force
+
+
+        Copy-Item '.\BUILD.mod.gn' '.\BUILD.gn' -Force
+
+        Write-Host "Finish patching BUILD.gn"
+
+        ## Patch pdfview.h
+
+        #Start patching the configuration fpdfview.h
+
+        Write-Host "Start patching fpdfview.h"
+
+        Set-Location C:\Tmp\pdfium\public 
+
+        #Copy the original file
+        if(-Not (Test-Path -Path C:\Tmp\pdfium\public\fpdfview.ORG.h)){
+            Copy-Item '.\fpdfview.h' '.\fpdfview.ORG.h'
+            Write-Host 'Copy the original fpdfview.h'
+        }
+
+        # Set file name
+        $File = '.\fpdfview.ORG.h'
+        $FileOut = '.\fpdfview.mod.h'
+        # Process lines of text from file and assign result to $NewContent variable
+        $NewContent = Get-Content -Path $File |
+            ForEach-Object {
+                # Output the existing line to pipeline in any case
+                
+                # If line matches regex
+                if($_ -match ('^' + [regex]::Escape('#if defined(COMPONENT_BUILD)')))
+                {
+                    # Add output additional line
+                    '//#if defined(COMPONENT_BUILD)'
+                }
+
+                elseif($_ -match ('^' + [regex]::Escape('#endif  // defined(WIN32)')))
+                {
+                    # Add output additional line
+                    $_
+                    '/**'
+                }
+                
+                elseif($_ -match ('^'+ [regex]::Escape('#endif  // defined(COMPONENT_BUILD)')))
+                {
+                    # Add output additional line
+                    $_
+                    '**/'
+                }
+
+                else{ $_ }
+
+            }
+
+        # Write content of $NewContent varibale back to file
+        $NewContent | Out-File -FilePath $FileOut -Encoding Default -Force
+
+        Copy-Item '.\fpdfview.mod.h' '.\fpdfview.h' -Force
+
+        Write-Host "Finish patching fpdfview.h"
+
+        #Start patching the configuration fpdfview.h
+
+        Write-Host "Configure gn with depo_tools..."
+
+        Set-Location C:\Tmp\pdfium
+
+        gn gen out/sharedReleasex64 --args='is_component_build = false is_official_build = true is_debug = false pdf_enable_v8 = false pdf_enable_xfa = false pdf_is_standalone = true  current_cpu=\"x64\" target_cpu=\"x64\" '
+
+        ninja -C out/sharedReleasex64 pdfium
+
 before_build:
   - dotnet restore
 
