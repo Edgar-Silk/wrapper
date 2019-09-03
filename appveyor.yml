@@ -5,47 +5,47 @@ configuration: Debug
 
 install:
   - ps: |
-  $MainDir = 'C:\Tmp'
+    $MainDir = 'C:\Tmp'
   
-  if ([System.IO.Directory]::Exists($MainDir)){
-    cd $MainDir
-  }
-  else{
-    New-Item -Path $MainDir -ItemType Directory
-    cd $MainDir
-  }
+    if ([System.IO.Directory]::Exists($MainDir)){
+      cd $MainDir
+    }
+    else{
+      New-Item -Path $MainDir -ItemType Directory
+      cd $MainDir
+    }
 
-# Get depo_tools from google repository
-$url = "https://storage.googleapis.com/chrome-infra/depot_tools.zip"
-$output = "depot_tools.zip"
-$start_time = Get-Date
-Invoke-WebRequest -Uri $url -OutFile $output
-Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
+    # Get depo_tools from google repository
+    $url = "https://storage.googleapis.com/chrome-infra/depot_tools.zip"
+    $output = "depot_tools.zip"
+    $start_time = Get-Date
+    Invoke-WebRequest -Uri $url -OutFile $output
+    Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
 
-# unzip the file
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-function Unzip
-{
-    param([string]$zipfile, [string]$outpath)
+    # unzip the file
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    function Unzip
+    {
+        param([string]$zipfile, [string]$outpath)
 
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-}
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+    }
 
-Unzip C:\Tmp\depot_tools.zip "C:\Tmp\depot_tools"
+    Unzip C:\Tmp\depot_tools.zip "C:\Tmp\depot_tools"
 
-$env:Path = "C:\Tmp\depot_tools;$env:Path"
-$env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
+    $env:Path = "C:\Tmp\depot_tools;$env:Path"
+    $env:DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
 
-cd C:\Tmp\depot_tools
+    cd C:\Tmp\depot_tools
 
-gclient
+    gclient
 
-cd ..
+    cd ..
 
-## Here, Takes time
-gclient config --unmanaged https://pdfium.googlesource.com/pdfium.git
+    ## Here, Takes time
+    gclient config --unmanaged https://pdfium.googlesource.com/pdfium.git
 
-gclient sync
+    gclient sync
 
 before_build:
   - dotnet restore
