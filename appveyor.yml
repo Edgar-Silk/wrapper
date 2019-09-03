@@ -3,7 +3,7 @@ image: Visual Studio 2017
 platform: x64
 configuration: Debug
 
-install:
+init:
   - ps: |
         $MainDir = 'C:\Tmp'
       
@@ -172,6 +172,7 @@ install:
 
         ninja -C out/sharedReleasex64 pdfium
 
+        
 before_build:
   - dotnet restore
 
