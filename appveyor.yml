@@ -6,15 +6,14 @@ configuration: Debug
 install:
   - ps: |
   $MainDir = 'C:\Tmp'
-
-
-if ([System.IO.Directory]::Exists($MainDir)){
+  
+  if ([System.IO.Directory]::Exists($MainDir)){
     cd $MainDir
-}
-else{
+  }
+  else{
     New-Item -Path $MainDir -ItemType Directory
     cd $MainDir
-}
+  }
 
 # Get depo_tools from google repository
 $url = "https://storage.googleapis.com/chrome-infra/depot_tools.zip"
